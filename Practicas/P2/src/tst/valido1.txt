@@ -1,0 +1,7 @@
+int main() {
+    float pi = 3.1416;
+    int contador = 0;
+    while (contador < 10) {
+        contador = contador + 1;
+    }
+}
