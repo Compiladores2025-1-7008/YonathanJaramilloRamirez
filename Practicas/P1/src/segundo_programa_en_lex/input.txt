@@ -1,0 +1,1 @@
+0xFF 0x1A3 0x00 int double float boolean char variable1 _variable2 count1234 _1a2b3c 12345 67890 hello world example test *, ; - ! ? :

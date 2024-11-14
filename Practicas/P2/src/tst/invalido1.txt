@@ -1,0 +1,2 @@
+int 123var = 5;
+float pi = 3..14;

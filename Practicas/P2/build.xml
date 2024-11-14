@@ -1,0 +1,47 @@
+<project name="LexerProject" default="run-tests" basedir=".">
+    <description>
+        Proyecto con Ant para compilar y ejecutar pruebas del analizador léxico.
+    </description>
+
+    <!-- Set up some directory properties -->
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir" value="${build.dir}/jar"/>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${jar.dir}"/>
+    </target>
+
+    <target name="compile" depends="init" description="Compilar el código fuente">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+
+    <target name="run" depends="compile" description="Ejecutar el analizador léxico">
+        <java classname="main.jflex.Lexer" classpath="${classes.dir}">
+            <arg value="src/tst/prueba.txt"/>
+        </java>
+    </target>
+
+    <!-- Nuevo target para ejecutar múltiples archivos de prueba -->
+    <target name="run-tests" depends="compile" description="Ejecutar todos los archivos de prueba">
+        <java classname="main.jflex.Lexer" classpath="${classes.dir}">
+            <arg value="src/tst/valido1.txt"/>
+        </java>
+        <java classname="main.jflex.Lexer" classpath="${classes.dir}">
+            <arg value="src/tst/valido2.txt"/>
+        </java>
+        <java classname="main.jflex.Lexer" classpath="${classes.dir}">
+            <arg value="src/tst/invalido1.txt"/>
+        </java>
+        <java classname="main.jflex.Lexer" classpath="${classes.dir}">
+            <arg value="src/tst/invalido2.txt"/>
+        </java>
+    </target>
+
+    <target name="clean" description="Limpiar los archivos generados">
+        <delete dir="${build.dir}"/>
+    </target>
+</project>

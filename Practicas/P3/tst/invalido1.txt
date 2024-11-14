@@ -1,0 +1,8 @@
+int a, b;
+float x;
+
+a = 3 * ;
+if a > 2)  // Error en el paréntesis de apertura del if
+    b = 5;
+else
+    b = 7;
