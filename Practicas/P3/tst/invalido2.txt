@@ -1,0 +1,7 @@
+int num;
+float res;
+
+num = 10
+while (res < 20   // Falta de paréntesis de cierre en while
+    res = res + 1
+}

@@ -65,3 +65,45 @@ Para la gramática G = ( N, Σ, P, S), descrita por las siguientes producciones:
 
 9. Documentar el código. (0.25pts)
 10. Proponer 4 archivos de prueba nuevos, 2 válidos y 2 inválidos. (0.25pts)
+
+
+
+
+### Uso dentro de la carpeta P3
+
+#### Compilación y Ejecución de la Primera Versión del Parser
+
+
+1. **Generar Lexers**: Genera el archivo `Lexer.java` y `Lexer2.java` usando JFlex.
+
+   ```bash
+   jflex src/main/jflex/Lexer.flex src/main/jflex/Lexer2.flex
+   ```
+
+3. **Compilar el Código**: Compila todos los archivos `.java` del proyecto.
+
+   ```bash
+   javac --source-path src -d build src/main/jflex/*.java src/main/java/*.java
+   ```
+
+4. **Ejecutar el Programa**: Ejecuta las dos versiones del parser con todos los archivos de prueba.
+
+   Para mayor claridad ejecutar comando por comando
+
+   Implementacion original (Pregunta 7)
+   ```bash
+   java -cp build main.java.Main tst/prueba.txt
+   java -cp build main.java.Main tst/valido1.txt
+   java -cp build main.java.Main tst/valido2.txt
+   java -cp build main.java.Main tst/invalido1.txt
+   java -cp build main.java.Main tst/invalido2.txt
+   ```
+   Implementacion con Token (Pregunta 8)
+    ```bash
+   java -cp build main.java.MainWithToken tst/prueba.txt
+   java -cp build main.java.MainWithToken tst/valido1.txt
+   java -cp build main.java.MainWithToken tst/valido2.txt
+   java -cp build main.java.MainWithToken tst/invalido1.txt
+   java -cp build main.java.MainWithToken tst/invalido2.txt
+   ```
+

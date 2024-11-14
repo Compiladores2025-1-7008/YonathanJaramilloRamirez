@@ -1,0 +1,11 @@
+float z;
+int counter;
+
+counter = 0;
+while (counter < 10) {
+    z = z + 1.5;
+    counter = counter + 1;
+}
+
+if (z == 15.0)
+    z = z - 1;

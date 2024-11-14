@@ -1,20 +1,34 @@
 package main.java;
 
 public class Token {
-    private int clase;
+    private int claseLexica;
     private String lexema;
+    private int linea;
 
-    public Token(int clase, String lexema) {
-        this.clase = clase;
+    public Token(int claseLexica, String lexema, int linea) {
+        this.claseLexica = claseLexica;
         this.lexema = lexema;
+        this.linea = linea;
     }
 
     public int getClaseLexica() {
-        return clase;
+        return claseLexica;
+    }
+
+    public String getLexema() {
+        return lexema;
+    }
+
+    public int getLinea() {
+        return linea;
     }
 
     @Override
     public String toString() {
-        return "<" + this.clase + "," + this.lexema + ">";
+        return "Token{" +
+                "claseLexica=" + claseLexica +
+                ", lexema='" + lexema + '\'' +
+                ", linea=" + linea +
+                '}';
     }
 }
