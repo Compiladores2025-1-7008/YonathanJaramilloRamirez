@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "redhat.vscode-xml",
+        "waderyan.gitblame",
+        "donjayamanne.githistory",
+        "aaron-bond.better-comments",
+        "oderwat.indent-rainbow",
+        "pkief.material-icon-theme",
+        "gruntfuggly.todo-tree",
+        "mhutchie.git-graph",
+        "ms-vsliveshare.vsliveshare",
+        "eamodio.gitlens",
+    ]
+}

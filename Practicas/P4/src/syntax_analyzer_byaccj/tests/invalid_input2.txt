@@ -1,0 +1,16 @@
+int a;
+float b;
+
+a = 10;
+b = 20.5;
+
+if (a > b &&) {       // Error: Logical operator '&&' must be followed by an operand
+    a = a + 1;
+} else {
+    b = b < 1;        // Error: Assignment instead of comparison
+}
+
+while (a || b) {      // Error: Logical OR '||' cannot be used with non-boolean operands
+    a = a - 1;
+    b = b / 2;
+}

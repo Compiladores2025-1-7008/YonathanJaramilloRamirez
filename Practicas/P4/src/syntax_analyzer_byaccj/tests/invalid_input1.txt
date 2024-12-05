@@ -1,0 +1,7 @@
+int a, b;
+float x, y;
+
+a === 10;          // Error: Invalid operator '==='
+b = a @ 5;         // Error: '@' is not a valid operator
+x = 3.14 *;        // Error: Incomplete expression
+y = (x + 2;        // Error: Missing closing parenthesis

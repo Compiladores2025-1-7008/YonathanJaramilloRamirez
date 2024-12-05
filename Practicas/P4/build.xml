@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+<project
+    name="Practice4"
+    default="help"
+    basedir=".">
+    <!-- Global configurations -->
+    <property
+        name="base.build.dir"
+        value="bin" />
+
+    <!-- Calculator BYACCJ settings -->
+    <property
+        name="calc.byaccj.src.dir"
+        value="src" />
+    <property
+        name="calc.byaccj.build.dir"
+        value="${base.build.dir}" />
+    <property
+        name="calc.byaccj.file"
+        value="${calc.byaccj.src.dir}/calculator_byaccj/archive.y" />
+
+    <!-- Calculator BYACCJ+JFlex settings -->
+    <property
+        name="calc.jflex.src.dir"
+        value="src/calculator_byaccj_jflex" />
+    <property
+        name="calc.jflex.build.dir"
+        value="${base.build.dir}" />
+
+    <!-- Syntax Analyzer settings -->
+    <property
+        name="syntax_analyzer.src.dir"
+        value="src/syntax_analyzer_byaccj" />
+    <property
+        name="syntax_analyzer.build.dir"
+        value="${base.build.dir}" />
+
+    <!-- Help target -->
+    <target name="help">
+        <echo>Available targets 🐜
+
+            ant calc-byaccj:run - Run Calculator BYACCJ
+            ant calc-jflex+byaccj:run - Run Calculator BYACCJ+JFlex
+            ant syntax_analyzer:test-all - Run all Syntax Analyzis tests
+            ant syntax_analyzer:test - Run base test
+            ant syntax_analyzer:test-valid1 - Run valid test 1
+            ant syntax_analyzer:test-valid2 - Run valid test 2
+            ant syntax_analyzer:test-invalid1 - Run invalid test 1
+            ant syntax_analyzer:test-invalid2 - Run invalid test 2
+        </echo>
+    </target>
+
+    <!-- =================== Calculator BYACCJ Targets =================== -->
+    <target name="calc-byaccj:clean">
+        <delete dir="${calc.byaccj.build.dir}" />
+        <delete file="${calc.byaccj.src.dir}/calculator_byaccj/Parser.java" />
+        <delete file="${calc.byaccj.src.dir}/calculator_byaccj/ParserVal.java" />
+    </target>
+
+    <target name="calc-byaccj:init">
+        <mkdir
+            dir="${calc.byaccj.build.dir}" />
+    </target>
+
+    <target
+        name="calc-byaccj:generate"
+        depends="calc-byaccj:init">
+        <condition
+            property="byaccj.command"
+            value="D:\\byaccj1.15_win32\\yacc.exe"
+            else="byaccj">
+            <os family="windows" />
+        </condition>
+        <exec executable="${byaccj.command}"
+            failonerror="true">
+            <arg value="-J" />
+            <arg value="${calc.byaccj.file}" />
+        </exec>
+        <move todir="${calc.byaccj.src.dir}/calculator_byaccj">
+            <fileset
+                dir="."
+                includes="Parser*.java" />
+        </move>
+    </target>
+
+    <target
+        name="calc-byaccj:compile"
+        depends="calc-byaccj:clean,calc-byaccj:generate">
+        <mkdir dir="${calc.byaccj.build.dir}" />
+        <javac
+            srcdir="${calc.byaccj.src.dir}/calculator_byaccj"
+            destdir="${calc.byaccj.build.dir}"
+            includeantruntime="false" />
+    </target>
+
+    <target
+        name="calc-byaccj:run"
+        depends="calc-byaccj:compile">
+        <java
+            classname="Parser"
+            fork="false"
+            failonerror="true">
+            <classpath>
+                <pathelement path="${calc.byaccj.build.dir}" />
+            </classpath>
+        </java>
+    </target>
+
+    <!-- =================== Calculator BYACCJ+JFlex Targets =================== -->
+    <target name="calc-jflex+byaccj:init">
+        <mkdir dir="${calc.jflex.build.dir}" />
+    </target>
+
+    <target
+        name="calc-jflex+byaccj:generate"
+        depends="calc-jflex+byaccj:init">
+        <condition
+            property="jflex.command"
+            value="jflex.bat"
+            else="jflex">
+            <os family="windows" />
+        </condition>
+        <exec executable="${jflex.command}">
+            <arg value="-d" />
+            <arg value="${calc.jflex.src.dir}" />
+            <arg value="${calc.jflex.src.dir}/jflex/Lexer.flex" />
+        </exec>
+        <exec executable="byaccj" failonerror="true">
+            <arg value="-Jclass=Parser" />
+            <arg value="-Jpackage=src.calculator_byaccj_jflex" />
+            <arg value="-J" />
+            <arg value="${calc.jflex.src.dir}/byacc/Parser.y" />
+        </exec>
+        <move todir="${calc.jflex.src.dir}">
+            <fileset dir="." includes="Parser*.java" />
+        </move>
+    </target>
+
+    <target name="calc-jflex+byaccj:clean">
+        <delete dir="${calc.jflex.build.dir}" />
+        <delete>
+            <fileset dir="${calc.jflex.src.dir}" includes="Lexer.java,Parser*.java" />
+        </delete>
+    </target>
+
+    <target name="calc-jflex+byaccj:compile"
+        depends="calc-jflex+byaccj:clean,calc-jflex+byaccj:generate">
+        <mkdir dir="${calc.jflex.build.dir}" />
+        <javac
+            srcdir="${calc.jflex.src.dir}"
+            destdir="${calc.jflex.build.dir}"
+            includeantruntime="false" />
+    </target>
+
+    <target name="calc-jflex+byaccj:run" depends="calc-jflex+byaccj:compile">
+        <java classname="src.calculator_byaccj_jflex.Main" fork="false" failonerror="true">
+            <classpath>
+                <pathelement path="${calc.jflex.build.dir}" />
+                <pathelement path="." />
+            </classpath>
+        </java>
+    </target>
+
+    <!-- =================== Syntax Analyzer Targets =================== -->
+    <target name="syntax_analyzer:init">
+        <mkdir dir="${syntax_analyzer.build.dir}" />
+    </target>
+
+    <target name="syntax_analyzer:generate" depends="syntax_analyzer:init">
+        <condition property="jflex.command" value="jflex.bat" else="jflex">
+            <os family="windows" />
+        </condition>
+        <exec executable="${jflex.command}" failonerror="true">
+            <arg value="-d" />
+            <arg value="${syntax_analyzer.src.dir}" />
+            <arg value="${syntax_analyzer.src.dir}/jflex/Lexer.flex" />
+        </exec>
+        <exec executable="byaccj" failonerror="true">
+            <arg value="-Jclass=Parser" />
+            <arg value="-Jpackage=src.syntax_analyzer_byaccj" />
+            <arg value="-J" />
+            <arg value="${syntax_analyzer.src.dir}/byacc/Parser.y" />
+        </exec>
+        <move todir="${syntax_analyzer.src.dir}">
+            <fileset dir="." includes="Parser*.java" />
+        </move>
+    </target>
+
+    <target name="syntax_analyzer:clean">
+        <delete dir="${syntax_analyzer.build.dir}" />
+        <delete verbose="true">
+            <fileset dir="${syntax_analyzer.src.dir}">
+                <include name="Lexer.java" />
+                <include name="Lexer.java~" />
+                <include name="Parser*.java" />
+            </fileset>
+            <fileset dir=".">
+                <include name="y.output" />
+                <include name="yacc.oa*" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="syntax_analyzer:compile" depends="syntax_analyzer:clean,syntax_analyzer:generate">
+        <mkdir dir="${syntax_analyzer.build.dir}" />
+        <javac srcdir="${syntax_analyzer.src.dir}" destdir="${syntax_analyzer.build.dir}"
+            includeantruntime="false" />
+    </target>
+
+    <target name="syntax_analyzer:run-test" depends="syntax_analyzer:compile">
+        <java classname="src.syntax_analyzer_byaccj.Main" fork="true" failonerror="false">
+            <classpath>
+                <pathelement location="${syntax_analyzer.build.dir}" />
+                <pathelement location="." />
+            </classpath>
+            <arg value="${file}" />
+        </java>
+    </target>
+
+    <!-- Individual test targets -->
+    <target name="syntax_analyzer:test">
+        <antcall target="syntax_analyzer:run-test">
+            <param
+                name="file"
+                value="${syntax_analyzer.src.dir}/tests/prueba.txt" />
+        </antcall>
+    </target>
+
+    <target name="syntax_analyzer:test-valid1">
+        <antcall target="syntax_analyzer:run-test">
+            <param
+                name="file"
+                value="${syntax_analyzer.src.dir}/tests/valid_input1.txt" />
+        </antcall>
+    </target>
+
+    <target name="syntax_analyzer:test-valid2">
+        <antcall target="syntax_analyzer:run-test">
+            <param
+                name="file"
+                value="${syntax_analyzer.src.dir}/tests/valid_input2.txt" />
+        </antcall>
+    </target>
+
+    <target name="syntax_analyzer:test-invalid1">
+        <antcall target="syntax_analyzer:run-test">
+            <param
+                name="file"
+                value="${syntax_analyzer.src.dir}/tests/invalid_input1.txt" />
+        </antcall>
+    </target>
+
+    <target name="syntax_analyzer:test-invalid2">
+        <antcall target="syntax_analyzer:run-test">
+            <param name="file" value="${syntax_analyzer.src.dir}/tests/invalid_input2.txt" />
+        </antcall>
+    </target>
+
+    <target name="syntax_analyzer:test-all"
+        depends="syntax_analyzer:test,
+                     syntax_analyzer:test-valid1,
+                     syntax_analyzer:test-valid2,
+                     syntax_analyzer:test-invalid1,
+                     syntax_analyzer:test-invalid2">
+    </target>
+
+    <!-- Clean all generated files -->
+
+    <target name="clean"
+        depends="syntax_analyzer:clean,
+                    calc-byaccj:clean,
+                    calc-jflex+byaccj:clean">
+    </target>
+</project>
